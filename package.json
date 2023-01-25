@@ -1,0 +1,16 @@
+{
+  "name": "dot-gua",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guautils/.gua.git"
+  },
+  "author": "g6d",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/guautils/.gua/issues"
+  },
+  "homepage": "https://github.com/guautils/.gua#readme"
+}
