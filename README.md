@@ -16,7 +16,4 @@ I try to update this Repo regularly but cant promise the impossible.
 
 :^ I'm too dumb for React and jquery is older than my grand grand grand grandma..
 
-As I also previously said: 
 > I want to challenge myself and see what I am capable of.
-
-Making my own also lets me know better what each function is doing and what its purpose is.
