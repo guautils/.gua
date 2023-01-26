@@ -13,6 +13,28 @@ const jGua = class dotGua extends Array {
       if(!Array.isArray(selector)) selector = [selector];
       super(...selector);
    }
+
+   each(fn) {
+      this.forEach(fn);
+      return this;
+   }
+
+   addClass(classNames) {
+      return this.each(e => e.classList.add(...(classNames.split(' '))));
+   }
+
+   removeClass(classNames) {
+      return this.each(e => e.classList.remove(...(classNames.split(' '))));
+   }
+
+   hasClass(classNames) {
+      return this.some(e => e.classList.contains(...(classNames.split(' '))));
+   }
+
+   toggleClass(className, value) {
+      if(typeof value != 'boolean') value = !this.hasClass(className);
+      return this.each(e => e.classList.toggle(className, value));
+   }
 }
 
 class dotGua {
@@ -27,6 +49,9 @@ class dotGua {
          return dotGua.init(document.querySelectorAll(selector) || []);
       }
    }
+
+   // TODO: create function
+   static createElement(tagName, opts, inner) { }
 }
 
 module.exports           = dotGua.init;
