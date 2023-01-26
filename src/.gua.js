@@ -8,7 +8,10 @@ const jGua = class dotGua extends Array {
 
    static createTag(tagName) {
       if(typeof tagName != 'string') return tagName;
-      if(tagName.includes(' ')) tagName = tagName?.split(' ')[0];
+
+      if(tagName.includes(' ')) 
+         tagName = tagName?.split(' ')[0];
+
       return document.createElement(tagName);
    }
 
@@ -59,8 +62,8 @@ const jGua = class dotGua extends Array {
    append(child) {
       if(Array.isArray(child)) child = child[0];
       if(typeof child == 'string' && child.startsWith('<')) 
-             child    = dotGua.parseHTML(child) || child;
-         let fragment = document.createDocumentFragment();
+                 child    = dotGua.parseHTML(child) || child;
+             let fragment = document.createDocumentFragment();
       fragment.append(child.cloneNode && child.cloneNode(true) || child);
       return this.each(e => e.append(fragment.cloneNode(true)));
    }
