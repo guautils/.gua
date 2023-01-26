@@ -7,7 +7,7 @@ const jGua = class dotGua extends Array {
     * @returns { HTMLElement | undefined }
     */
    static parseHTML(html) {
-      return new DOMParser().parseFromString(html, 'text/html')?.body;
+      return new DOMParser().parseFromString(html, 'text/html').body.children?.[0]||html;
    }
 
    /**
@@ -43,6 +43,7 @@ const jGua = class dotGua extends Array {
     * @returns { dotGua } `this`
     */
    addClass(classNames) {
+      if(!classNames) return this;
       return this.each(e => e.classList.add(...(classNames.split(' '))));
    }
 
@@ -51,6 +52,7 @@ const jGua = class dotGua extends Array {
     * @returns { dotGua } `this`
     */
    removeClass(classNames) {
+      if(!classNames) return this;
       return this.each(e => e.classList.remove(...(classNames.split(' '))));
    }
 
@@ -59,17 +61,19 @@ const jGua = class dotGua extends Array {
     * @returns { boolean } `boolean`
     */
    hasClass(classNames) {
+      if(!classNames) return this;
       return this.some(e => e.classList.contains(...(classNames.split(' '))));
    }
 
    /**
-    * @param { string } className The class name to toggle.
+    * @param { string } classNames The class name to toggle.
     * @param { boolean } value The value to set the class to. If not set, the class will be toggled.
     * @returns { dotGua } `this`
     */
-   toggleClass(className, value) {
-      if(typeof value != 'boolean') value = !this.hasClass(className);
-      return this.each(e => e.classList.toggle(className, value));
+   toggleClass(classNames, value) {
+      if(!classNames) return this;
+      if(typeof value != 'boolean') value = !this.hasClass(classNames);
+      return this.each(e => e.classList.toggle(classNames, value));
    }
 
    /**
@@ -209,17 +213,23 @@ class dotGua {
       if(!tagName || typeof tagName != 'string') return;
       const element = this.init(jGua.createTag(tagName));
 
-      if(!!inner) {
-         let childKey = Object.keys(opts).find(e => getKey(e) == 'childs');
-         if(opts && childKey && opts[childKey]) {
-            if(!Array.isArray(opts[childKey])) opts[childKey] = [opts[childKey]];
-            } else opts['childs']                             = [];
+      let isOptsString = typeof opts == 'string';
 
-         if(Array.isArray(inner)) opts[childKey] = opts[childKey].concat(inner);
-         else opts[childKey].push(inner);
+      if(!!inner) {
+         if(!isOptsString) {
+            let childKey = Object.keys(opts).find(e => getKey(e) == 'childs')||'childs';
+            if(!!Object.keys(opts).length && childKey && opts[childKey]) {
+               if(!Array.isArray(opts[childKey])) opts[childKey] = [opts[childKey]];
+               } else opts[childKey]                             = [];
+            if(Array.isArray(inner)) opts[childKey] = opts[childKey].concat(inner);
+            else opts[childKey].push(inner);
+         } else {
+            if(Array.isArray(inner)) inner.forEach(e => element.append(e));
+            else element.append(inner); 
+         }
       }
 
-      if(typeof opts == 'string') element.addClass(opts);
+      if(isOptsString) element.addClass(opts);
       else if(typeof opts == 'object' && !Array.isArray(opts)) {
          for(let key in opts) {
             let val = opts[key];
