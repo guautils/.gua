@@ -8,9 +8,6 @@ const jGua = class dotGua extends Array {
 
    static createTag(tagName) {
       if(typeof tagName != 'string') return tagName;
-      
-      // `tagName` shouldn't be <div abc></div abc>
-      // only the `div` is important 
       if(tagName.includes(' ')) tagName = tagName?.split(' ')[0];
       return document.createElement(tagName);
    }
@@ -123,9 +120,7 @@ class dotGua {
 
    static createElement(tagName, opts, inner) {
       if(!tagName || typeof tagName != 'string') return;
-      let element = this.init(jGua.createTag(tagName));
-
-      // if opts is a string, tread it like a className
+      const element = this.init(jGua.createTag(tagName));
       if(typeof opts == 'string') element.addClass(opts);
       else if(typeof opts == 'object' && !Array.isArray(opts)) {
          for(let key in opts) {
