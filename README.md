@@ -18,3 +18,5 @@ I try to update this Repo regularly but cant promise the impossible.
 :^ I'm too dumb for React and jquery is older than my grand grand grand grandma..
 
 > I want to challenge myself and see what I am capable of.
+
+[Support me on Ko-fi](https://ko-fi.com/T6T56CO8O)
