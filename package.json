@@ -1,8 +1,8 @@
 {
-  "name": "dot-gua",
-  "version": "0.0.126",
-  "description": "",
-  "main": "index.js",
+  "name": "dotgua",
+  "version": "0.0.127",
+  "description": "a JS library for building modern, beautiful and interactive UIs",
+  "main": "./src/.gua.js",
   "repository": "https://github.com/guautils/.gua",
   "author": "g6d",
   "license": "MIT",
