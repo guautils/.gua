@@ -31,7 +31,7 @@ dot(() => {
    const appMount = dot.createElement('div', 'app-mount'),
          container = dot.createElement('div', {
             id      : 'container',
-            attr    : { 'data-abc': 'something' }
+            attr    : { 'data-abc': 'something' },
             onclick : () => container.remove(),
             parent  : appMount
          });
