@@ -20,3 +20,35 @@ I try to update this Repo regularly but cant promise the impossible.
 > I want to challenge myself and see what I am capable of.
 
 [Support me on Ko-fi](https://ko-fi.com/T6T56CO8O)
+
+## Example Code
+
+```js
+// dotgua v0.0.127
+const dot = require('dotgua');
+
+dot(() => {
+   const appMount = dot.createElement('div', 'app-mount'),
+         container = dot.createElement('div', {
+            id      : 'container',
+            attr    : { 'data-abc': 'something' }
+            onclick : () => container.remove(),
+            parent  : appMount
+         });
+   container.render('<p>paragraph #1</p>');
+
+   for(let i=1; i<4; i++) appMount.append(`<p>paragraph #${i}</p>`);
+   appMount.parent(document.body);
+});
+```
+> will return
+```html
+<div class="app-mount">
+   <div id="container" data-abc="something">
+      <p>paragraph #1</p>
+   </div>
+   <p>paragraph #1</p>
+   <p>paragraph #2</p>
+   <p>paragraph #3</p>
+</div>
+```
