@@ -1,13 +1,20 @@
-const regex = /^\s*<[\s\S]+>$/g,
-      jGua  = class dotGua extends Array {
+const regex          = /^\s*<[\s\S]+>$/g,
+      parseHTMLRegex = /<([\s\S]*)>([^\b</>]+)<\/\1>/g,
+      jGua           = class dotGua extends Array {
          
          /**
           * @param { string } html The HTML string to parse.
           * @returns { HTMLElement | undefined }
           */
          static parseHTML(html) {
-            return new DOMParser().parseFromString(html, 'text/html').body.children?.[0]||html;
-         }
+            let content                            = [];
+            if  (typeof html === 'string') content = html.match(parseHTMLRegex);
+
+            let fragment = new DocumentFragment();
+            content.forEach(e => fragment.append(new DOMParser().parseFromString(e, 'text/html').body.children?.[0]||e));
+
+            return fragment;
+         } 
 
          /**
           * @param { string } tagName The name of the tag you want to create.
@@ -195,7 +202,7 @@ const regex = /^\s*<[\s\S]+>$/g,
           */
          children(selector) {
             let parent                                              = this[0],
-               childs                                              = new dotGua([...(parent.childNodes||parent.children)]);
+                childs                                              = new dotGua([...(parent.childNodes||parent.children)]);
             if  (!!selector && typeof selector === 'string') childs = childs.filter(e => [...document.querySelectorAll(selector)]?.includes(e));
             return childs;
          }
@@ -206,7 +213,7 @@ const regex = /^\s*<[\s\S]+>$/g,
           */
          render(...inner) {
             if  (!Array.isArray(inner)) inner = [inner];
-            let parent                        = new dotGua(this[0]);
+            let parent                        = this.first();
 
             if(!parent.length) return this;
 
@@ -217,6 +224,41 @@ const regex = /^\s*<[\s\S]+>$/g,
             });
 
             return this;
+         }
+
+         /**
+          * @returns { dotGua } A new dotGua object.
+          */
+         first() {
+            return new dotGua(this[0]);
+         }
+
+         /**
+          * @param n The index of the element to return.
+          * @returns { dotGua } A new dotGua object.
+          */
+         nth(n) {
+            return new dotGua(this?.[n]);
+         }
+         
+         /**
+          * @returns { dotGua } A new dotGua object.
+          */
+         last() {
+            return this.slice(-1);
+         }
+
+         /**
+          * @returns { dotGua } A new dotGua object.
+          */
+         next() {
+            return new dotGua(this[0]?.nextElementSibling);
+         }
+         /**
+          * @returns { dotGua } A new dotGua object.
+          */
+         prev() {
+            return new dotGua(this[0]?.previousElementSibling);
          }
       }
 
@@ -236,7 +278,7 @@ const getKey = key => ((key = key?.toLowerCase()||key), (() => {
 class dotGua {
 
    /**
-    * @param { string } selector the selector to be used.
+    * @param { string | function } selector the selector to be used.
     * @returns { dotGua } new `dotGua` Object
     */
    static init(selector) {
@@ -281,7 +323,7 @@ class dotGua {
 
       const element = this.init(jGua.createTag(tagName));
 
-      let isOptsAString = typeof opts === 'string';
+      let isOptsAString = (typeof opts === 'string');
 
       if(!!inner) {
 
@@ -328,10 +370,10 @@ class dotGua {
                      for(let attr of Object.keys(val))
                         element.on(attr, val[attr]);                
                break;
-               case 'html' : element.html(val); break;
+               case 'html'  : element.html(val); break;
                case 'parent': element.parent(val); break;
-               case 'text' : element.text(val); break;
-                    default: element[0][key] = opts[key]; break;
+               case 'text'  : element.text(val); break;
+                    default : element[0][key] = opts[key]; break;
             }
          }
 
