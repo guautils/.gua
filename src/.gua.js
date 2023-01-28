@@ -1,5 +1,5 @@
-const regex          = /^\s*<[\s\S]+>$/g,
-      parseHTMLRegex = /<([\s\S]*)>([^\b</>]+)<\/\1>/g,
+const regex          = /^\s*<.*>$/g,
+      parseHTMLRegex = /<([^\n]+).*>(.*)?<\/\1>/g,
       jGua           = class dotGua extends Array {
          
          /**
@@ -7,13 +7,12 @@ const regex          = /^\s*<[\s\S]+>$/g,
           * @returns { HTMLElement | undefined }
           */
          static parseHTML(html) {
-            let content                            = [];
+            let content                            = [],
+                fragment                           = new DocumentFragment();
             if  (typeof html === 'string') content = html.match(parseHTMLRegex);
-
-            let fragment = new DocumentFragment();
             content.forEach(e => fragment.append(new DOMParser().parseFromString(e, 'text/html').body.children?.[0]||e));
 
-            return fragment;
+            return [...(fragment.children||[])];
          } 
 
          /**
@@ -32,11 +31,11 @@ const regex          = /^\s*<[\s\S]+>$/g,
          constructor(selector) {
             if(!selector) return super();
             if(!Array.isArray(selector)) selector = [selector];
-            super(...selector);
+            super(...(selector));
          }
 
          /**
-          * @param { function } fn  The function to execute on each element.
+          * @param { function } fn The function to execute on each element.
           * @returns { dotGua } `this`
           */
          each(fn) {
@@ -88,7 +87,7 @@ const regex          = /^\s*<[\s\S]+>$/g,
           */
          text(text) {
             if(!!text && typeof text != 'string') return this;
-            return !text ? this[0]?.innerText: this.each(e => e.innerText = text);
+            return !text ? this[0]?.innerText : this.each(e => e.innerText = text);
          }
 
          /**
@@ -97,7 +96,7 @@ const regex          = /^\s*<[\s\S]+>$/g,
           */
          html(html) {
             if(!!html && typeof html != 'string') return this;
-            return !html ? this[0]?.innerHTML: this.each(e => e.innerHTML = html);
+            return !html ? this[0]?.innerHTML : this.each(e => e.innerHTML = html);
          }
 
          /**
@@ -108,19 +107,81 @@ const regex          = /^\s*<[\s\S]+>$/g,
          attr(key, value) {
             if(!key || typeof key != 'string' || (!!value && typeof value != 'string')) return this;
             if(!value) return this[0]?.getAttribute(key)||this;
-            return this.each(e => e.setAttribute(key,value))
+            return this.each(e => e.setAttribute(key,value));
          }
 
          /**
           * @param child The child to append to the element.
           * @returns { dotGua } `this`
           */
-         append(child) {
-            if(typeof child === 'string' && child.startsWith('<')) child = dotGua.parseHTML(child) || child;
-            return this.each((e,i) => {
-               e.append((!i || !child.clone) ? (child instanceof dotGua || Array.isArray(child) ? child?.[0] : child) : child.clone(true));
-               if(child.emit) child.emit('append');
+         append(...childs) {
+            if(!Array.isArray(childs)) childs = [childs];
+
+            return this.each(e => {
+               if(!e.append) return;
+               childs.forEach(child => {
+                  if(typeof child === 'string' && child.match(parseHTMLRegex)) 
+                     child = dotGua.parseHTML(child);
+                  if(!Array.isArray(child)) e.append(!child.clone ? child : child.clone(true));
+                  else child.forEach((_child) => e.append(!_child.clone ? _child : _child.clone(true)));
+
+                  if(child.emit) child.emit('append');
+               });
             });
+         }
+
+         /**
+          * @param child The child to insert.
+          * @returns { dotGua } `this`
+          */
+         insertBefore(child) {
+            let prevSib                      = this.first();
+            if  (Array.isArray(child)) child = child[0];
+            if(!prevSib.length || !(child instanceof HTMLElement)) return this;
+            
+            let parent = prevSib.parent()[0];
+            if(!parent) return this;
+            parent.insertBefore(child, prevSib[0]);
+            
+            return this;
+         }
+
+         /**
+          * @param child The element to insert.
+          * @returns { dotGua } `this`
+          */
+         insertAfter(child) {
+            let prevSib                      = this.first();
+            if  (Array.isArray(child)) child = child[0];
+            if(!prevSib.length || !(child instanceof HTMLElement)) return this;
+            
+            let parent = prevSib.parent()[0], nextSib = prevSib.next();
+            if(!parent) return this;
+
+            if(!nextSib) return parent.append(child);
+            else parent.insertBefore(child, nextSib[0]);
+
+            return this;
+         }
+
+         /**
+          * @param target The element to insert before.
+          * @returns { dotGua } `this`
+          */
+         before(target) {
+            if(Array.isArray(target)) target = target[0];
+            new dotGua(target).insertBefore(this);
+            return this;
+         }
+
+         /**
+          * @param target The element to insert after.
+          * @returns { dotGua } `this`
+          */
+         after(target) {
+            if(Array.isArray(target)) target = target[0];
+            new dotGua(target).insertAfter(this);
+            return this;
          }
 
          /**
@@ -130,10 +191,11 @@ const regex          = /^\s*<[\s\S]+>$/g,
          remove(child) {
             if(child instanceof dotGua) child = child[0];
             if(!(child instanceof HTMLElement)) {
-               if(!child && typeof child === 'undefined') this[0]?.remove();
+               if(!child && typeof child === 'undefined') 
+                  new dotGua(this[0]).emit('remove').remove();
                return this;
             }
-            return this.each(e => e?.removeChild(child));
+            return this.each(e => e?.removeChild(new dotGua(child).emit('remove')[0]));
          }
 
          /**
@@ -189,7 +251,7 @@ const regex          = /^\s*<[\s\S]+>$/g,
           * @returns { dotGua } `this`
           */
          parent(parent) {
-            if(!(parent instanceof dotGua || parent instanceof HTMLElement)) return this[0]?.parentElement;
+            if(!(parent instanceof dotGua || parent instanceof HTMLElement)) return new dotGua(this[0]?.parentElement);
             return this.each(e => {
                if(e.parentElement) new dotGua(e.parentElement).remove(e);
                (new dotGua(parent)).append(e);
@@ -202,8 +264,9 @@ const regex          = /^\s*<[\s\S]+>$/g,
           */
          children(selector) {
             let parent                                              = this[0],
-                childs                                              = new dotGua([...(parent.childNodes||parent.children)]);
-            if  (!!selector && typeof selector === 'string') childs = childs.filter(e => [...document.querySelectorAll(selector)]?.includes(e));
+                childs                                              = new dotGua([...((parent.childNodes||parent.children)||[])]),
+                selected                                            = [...document.querySelectorAll(selector)];
+            if  (!!selector && typeof selector === 'string') childs = childs.filter(e => selected.includes(e));
             return childs;
          }
 
@@ -219,18 +282,13 @@ const regex          = /^\s*<[\s\S]+>$/g,
 
             parent.children().each(e => e.remove());
             inner.forEach(e => {
-               if(!(e instanceof dotGua)) e = new dotGua(e);
+               if(typeof e == 'string' && e.match(parseHTMLRegex).length) e = dotGua.parseHTML(e);
+               if(!(e instanceof dotGua)) e                                 = new dotGua(e);
+
                e.parent(parent);
             });
 
             return this;
-         }
-
-         /**
-          * @returns { dotGua } A new dotGua object.
-          */
-         first() {
-            return new dotGua(this[0]);
          }
 
          /**
@@ -240,12 +298,23 @@ const regex          = /^\s*<[\s\S]+>$/g,
          nth(n) {
             return new dotGua(this?.[n]);
          }
+
+         slice(start, end, selector) {
+            return [...this.filter(e => [...document.querySelectorAll(selector)].includes(e))].slice(start, end);
+         }
+
+         /**
+          * @returns { dotGua } A new dotGua object.
+          */
+         first() {
+            return this.nth(0);
+         }
          
          /**
           * @returns { dotGua } A new dotGua object.
           */
          last() {
-            return this.slice(-1);
+            return new dotGua(this.slice(-1));
          }
 
          /**
@@ -254,11 +323,42 @@ const regex          = /^\s*<[\s\S]+>$/g,
          next() {
             return new dotGua(this[0]?.nextElementSibling);
          }
+
          /**
           * @returns { dotGua } A new dotGua object.
           */
          prev() {
             return new dotGua(this[0]?.previousElementSibling);
+         }
+
+         /**
+          * @param { dotGua | any[] } elements The elements to add to the end of the array.
+          * @returns { dotGua } `this`
+          */
+         add(...selector) {
+            if(!Array.isArray(selector)) {
+               if(typeof selector == 'function') 
+                  return document.addEventListener('DOMContentLoaded', selector);
+
+               if(!selector) return new jGua();
+               if(selector instanceof HTMLElement) selector = [selector];
+               if(selector instanceof NodeList) selector    = [...selector];
+               if(Array.isArray(selector)) selector         = [...selector];
+
+               if(typeof selector === 'string') 
+                  if   (new RegExp(regex).test(selector)) selector = jGua.parseHTML(selector);
+                  else selector                                    = [...document.querySelectorAll(selector)];
+
+            }  else {
+               selector.forEach(e => {
+                  if(typeof e === 'string') e = [...document.querySelectorAll(e)];
+
+                  if(e instanceof HTMLElement) this.push(e);
+                  else if (Array.isArray(e)) e.forEach(_ => this.push(_));
+               });
+            }
+            
+            return this;
          }
       }
 
@@ -282,24 +382,13 @@ class dotGua {
     * @returns { dotGua } new `dotGua` Object
     */
    static init(selector) {
+      if(typeof selector == 'function') 
+         return document.addEventListener('DOMContentLoaded', selector);
 
-      if(typeof selector == 'function') {
-         document.addEventListener('DOMContentLoaded', selector);
-         return;
-      }
+      let result = new jGua();
 
-      if(!selector) return new jGua();
-      if(selector instanceof HTMLElement) return new jGua([selector]);
-      if(selector instanceof NodeList) return new jGua([...selector]);
-      if(typeof selector === 'string') {
-         if(regex.test(selector) && selector.startsWith('<')) 
-            return dotGua.init(jGua.parseHTML(selector));
-
-         // don't know why this throws an error. but this kind of fixes the issue for now.
-         // gonna check later what i did wrong here.
-         try { return dotGua.init(document.querySelectorAll(selector) || []); } 
-         catch { return dotGua.init(selector); }
-      }
+      if(!selector) return result;
+      return result.add(selector);
    }
 
    /**
@@ -319,7 +408,7 @@ class dotGua {
     */
    static createElement(tagName, opts, inner) {
       if(!tagName || typeof tagName != 'string') return;
-      if(!opts) opts = {};
+      if(!opts || !['object', 'string'].includes(typeof opts)) opts = {};
 
       const element = this.init(jGua.createTag(tagName));
 
@@ -361,8 +450,8 @@ class dotGua {
                         element.attr(attr, val[attr]);   
                break;   
                case 'childs': 
-                  if(Array.isArray(val))
-                     for(let child of val) element.append(child);
+                  if(!Array.isArray(val)) val = [val];
+                  element.append(...val);
                break;
                case 'classname': element.addClass(val); break;
                case 'events'   : 
