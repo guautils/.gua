@@ -1,5 +1,4 @@
 ![code size in bytes](https://img.shields.io/github/repo-size/guautils/.gua?color=%237073fd&style=for-the-badge)
-![Lines of code](https://img.shields.io/tokei/lines/github/guautils/.gua?color=%236a6dfd&style=for-the-badge)
 ![package.json version](https://img.shields.io/github/package-json/v/guautils/.gua?color=%236a6dfd&style=for-the-badge)
 ![commit activity](https://img.shields.io/github/commit-activity/w/guautils/.gua?label=commits&color=%236a6dfd&style=for-the-badge)
 ![sponsors](https://img.shields.io/github/sponsors/guautils?color=%236a6dfd&style=for-the-badge)
