@@ -1,6 +1,6 @@
 {
   "name": "dotgua",
-  "version": "0.0.1281547",
+  "version": "0.0.1282100",
   "description": "a JS library for building modern, beautiful and interactive UIs",
   "main": "./src/.gua.js",
   "repository": "https://github.com/guautils/.gua",
