@@ -1,21 +1,21 @@
-![code size in bytes](https://img.shields.io/github/repo-size/guautils/.gua?color=%237073fd&style=for-the-badge)
-![package.json version](https://img.shields.io/github/package-json/v/guautils/.gua?color=%236a6dfd&style=for-the-badge)
-![commit activity](https://img.shields.io/github/commit-activity/w/guautils/.gua?label=commits&color=%236a6dfd&style=for-the-badge)
-![sponsors](https://img.shields.io/github/sponsors/guautils?color=%236a6dfd&style=for-the-badge)
-![Project Banner](./imgs/readme_banner.png)
+![code size in bytes](https://img.shields.io/github/repo-size/guautils/.gua?color=%23EAF0FF&style=for-the-badge)
+![package.json version](https://img.shields.io/github/package-json/v/guautils/.gua?color=%23EAF0FF&style=for-the-badge)
+![commit activity](https://img.shields.io/github/commit-activity/w/guautils/.gua?label=commits&color=%23EAF0FF&style=for-the-badge)
+![Project Banner](./imgs/readme_banner.svg)
 
-[Support me on Ko-fi](https://ko-fi.com/T6T56CO8O) | [Documentation](https://dotgua.gitbook.io/)
+[Documentation](https://guautils.gitbook.io/bonny) (uncomplete, still gets written) | [Issues](https://github.com/guautils/bonny/issues)
 
-# What is `.gua`
+---
+### I try to update this Repo regularly, but cant promise the impossible.
 
-`.gua` is my fusion of jquery with React and a sprinkle of my own ideas.
+# ![What is Bonny?](./imgs/what-is.svg)
+`bonny` is my own UI library, that i am gonna use in future projects. 
 
-I want to challenge myself and also make a useful tool for later projects i might do.
+I wanna try to make it as optimized and lightweight as i possibly can.<br>But i probably will fail at some points or another.
 
-I try to update this Repo regularly but cant promise the impossible.
+---
 
-# Why dont just use React and/or jquery
+### Disclaimers:
 
-:^ I'm too dumb for React and jquery is older than my grand grand grand grandma..
-
-> I want to challenge myself and see what I am capable of.
+Because this Project is still in development, it's not safe to be used.
+Function names aren't written in Stone and can and will change over time.

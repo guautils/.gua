@@ -1,13 +1,13 @@
 {
-  "name": "dotgua",
-  "version": "0.0.1282100",
+  "name": "bonny",
+  "version": "0.2.201",
   "description": "a JS library for building modern, beautiful and interactive UIs",
-  "main": "./src/.gua.js",
-  "repository": "https://github.com/guautils/.gua",
+  "main": "./index.js",
+  "repository": "https://github.com/guautils/bonny",
   "author": "g6d",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/guautils/.gua/issues"
+    "url": "https://github.com/guautils/bonny/issues"
   },
-  "homepage": "https://github.com/guautils/.gua#readme"
+  "homepage": "https://github.com/guautils/bonny#readme"
 }
