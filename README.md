@@ -1,6 +1,6 @@
-![code size in bytes](https://img.shields.io/github/repo-size/guautils/.gua?color=%23EAF0FF&style=for-the-badge)
-![package.json version](https://img.shields.io/github/package-json/v/guautils/.gua?color=%23EAF0FF&style=for-the-badge)
-![commit activity](https://img.shields.io/github/commit-activity/w/guautils/.gua?label=commits&color=%23EAF0FF&style=for-the-badge)
+![code size in bytes](https://img.shields.io/github/repo-size/guautils/bonny?color=%23EAF0FF&style=for-the-badge)
+![package.json version](https://img.shields.io/github/package-json/v/guautils/bonny?color=%23EAF0FF&style=for-the-badge)
+![commit activity](https://img.shields.io/github/commit-activity/w/guautils/bonny?label=commits&color=%23EAF0FF&style=for-the-badge)
 ![Project Banner](./imgs/readme_banner.svg)
 
 [Documentation](https://guautils.gitbook.io/bonny) (uncomplete, still gets written) | [Issues](https://github.com/guautils/bonny/issues)
