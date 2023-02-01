@@ -1,6 +1,6 @@
 {
   "name": "bonny",
-  "version": "0.2.0201",
+  "version": "0.2.21",
   "description": "a JS library for building modern, beautiful and interactive UIs",
   "main": "./index.js",
   "repository": "https://github.com/guautils/bonny",
