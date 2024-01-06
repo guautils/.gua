@@ -3,7 +3,7 @@
 ![commit activity](https://img.shields.io/github/commit-activity/w/guautils/bonny?label=commits&color=%23EAF0FF&style=for-the-badge)
 ![Project Banner](./imgs/readme_banner.svg)
 
-[Documentation](https://guautils.gitbook.io/bonny) (uncomplete, still gets written) | [Issues](https://github.com/guautils/bonny/issues)
+[Issues](https://github.com/guautils/bonny/issues)
 
 ---
 ### I try to update this Repo regularly, but cant promise the impossible.
